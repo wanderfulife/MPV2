@@ -26,7 +26,7 @@ const navigation = useNavigation();
           <Text className={textInput}>Sign up</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text className={textInput}>Login</Text>
+          <Text className={bottomTextInput}>Login</Text>
           <Text className={logo}>MORE PAY</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
@@ -36,6 +36,7 @@ const navigation = useNavigation();
 
 export default LoginScreen;
 
+const bottomTextInput = "text-center text-white font-bold pt-6";
 const container = "flex-1 justify-center items-center";
 const input = "text-center bg-white p-4 m-1 rounded-2xl w-52 font-semibold";
 const SignUpButton = "p-2 rounded-2xl my-2 w-36 bg-green-400";

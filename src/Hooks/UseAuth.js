@@ -1,11 +1,20 @@
-import { View, Text } from "react-native";
 import React, { createContext, useContext } from "react";
+import { auth } from "../../firebase";
 
-const AuthContext = createContext({
-  // initial state...
-})
 
-export const AuthProvider = ({children}) => {
+const AuthContext = createContext({})
+
+export const AuthProvider = ({ children }) => {
+  
+
+
+
+  const handleLogin = (email, password) => {
+  
+}
+
+
+
   return (
     <AuthContext.Provider value={{
       user: null

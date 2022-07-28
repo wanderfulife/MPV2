@@ -3,15 +3,17 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
+  SafeAreaView
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import useAuth from "../../Hooks/UseAuth";
 
 const LoginScreen = () => {
-
-const navigation = useNavigation();
-
+  const navigation = useNavigation();
+  const { signInWithEmail } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <SafeAreaView className={safeArea}>
@@ -19,16 +21,30 @@ const navigation = useNavigation();
         className={container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <TextInput className={input} placeholder="Email" />
-        <TextInput className={input} placeholder="Password" secureTextEntry />
-
-        <TouchableOpacity className={loginButton}>
+        <TextInput
+          className={input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput
+          className={input}
+          placeholder="Password"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          secureTextEntry
+        />
+ 
+        <TouchableOpacity
+          className={loginButton}
+          onPress={() => {
+            signInWithEmail(email, password);
+          }}
+        >
           <Text className={topTextInput}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-          <Text className={bottomTextInput}>
-            Register
-          </Text>
+          <Text className={bottomTextInput}>Register</Text>
           <Text className={logo}>MORE PAY</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>

@@ -5,13 +5,15 @@ import {
   TouchableOpacity,
   SafeAreaView
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-
+import useAuth from "../../Hooks/UseAuth";
 
 const LoginScreen = () => {
-
-const navigation = useNavigation();
+  const navigation = useNavigation();
+  const { logInWithEmail } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <SafeAreaView className={safeArea}>
@@ -19,10 +21,26 @@ const navigation = useNavigation();
         className={container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <TextInput className={input} placeholder="Email" />
-        <TextInput className={input} placeholder="Password" secureTextEntry />
+        <TextInput
+          className={input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput
+          className={input}
+          placeholder="Password"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          secureTextEntry
+        />
 
-        <TouchableOpacity className={SignUpButton}>
+        <TouchableOpacity
+          className={SignUpButton}
+          onPress={() => {
+            logInWithEmail(email, password);
+          }}
+        >
           <Text className={textInput}>Sign up</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>

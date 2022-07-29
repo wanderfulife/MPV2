@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { auth } from "../../firebase";
 import {
   createUserWithEmailAndPassword,
@@ -27,31 +27,43 @@ export const AuthProvider = ({ children }) => {
     []
   );
 
+  useEffect(() => {
+    if (!error) {
+      return;
+    } else {
+      alert(error);
+    }
+  }, [error]);
+
   const logout = () => {
     signOut(auth).catch((error) => setError(error));
-    console.log('signed out');
+  };
+
+  const signUpWithEmail = (email, password) => {
+    createUserWithEmailAndPassword(auth, email, password).catch((error) =>
+      setError(error)
+    );
   };
 
   const signInWithEmail = (email, password) => {
-     createUserWithEmailAndPassword(auth, email, password).catch((error) =>
+    signInWithEmailAndPassword(auth, email, password).catch((error) =>
       setError(error)
     );
   };
 
-  const logInWithEmail = (email, password) => { 
-    signInWithEmailAndPassword(auth, email, password).catch((error) =>
-      setError(error)
-    );
-  }
+  const memoedValue = useMemo(
+    () => ({
+      user,
+      signInWithEmail,
+      signUpWithEmail,
+      logout
+    }),
+    [user]
+  );
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        signInWithEmail,
-        logInWithEmail,
-        logout
-      }}
+      value={memoedValue}
     >
       {children}
     </AuthContext.Provider>

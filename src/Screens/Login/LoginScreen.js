@@ -37,9 +37,7 @@ const LoginScreen = () => {
  
         <TouchableOpacity
           className={loginButton}
-          onPress={() => {
-            signInWithEmail(email, password);
-          }}
+          onPress={() => { signInWithEmail(email, password) }}
         >
           <Text className={topTextInput}>Login</Text>
         </TouchableOpacity>

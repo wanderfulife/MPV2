@@ -16,6 +16,7 @@ import {
   SimpleLineIcons
 } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
+import { shouldUseActivityState } from "react-native-screens";
 
 const DUMMY_DATA = [
   {
@@ -73,20 +74,41 @@ const HomeScreen = () => {
           cards={DUMMY_DATA}
           stackSize={5}
           cardIndex={0}
-          verticalSwipe={false}
           animateCardOpacity
+          verticalSwipe={false}
+          onSwipedLeft={() => console.log("swipe next")}
+          onSwipedRight={() => console.log("swipe hire")}
+          overlayLabels={{
+            left: {
+              title: "NOPE",
+              style: {
+                label: {
+                  textAlign: "right",
+                  color: "red"
+                }
+              }
+            },
+            right: {
+              title: "HIRE",
+              style: {
+                label: {
+                  color: "#4ade80"
+                }
+              }
+            }
+          }}
           renderCard={(card) => (
             <View key={card.id} className="relative h-3/4 rounded-xl">
               <Image
                 className="absolute top-0 h-full w-full rounded-xl"
                 source={{ uri: card.photoURL }}
               />
-              <View  style={styles.cardShadow}>
+              <View style={styles.cardShadow}>
                 <View>
-                  <Text className="text-xl font-bold">{card.firstName}</Text>
+                  <Text className="text-xl  font-bold">{card.firstName}</Text>
                   <Text>{card.job}</Text>
                 </View>
-                <Text className="text-2xl font-bold">{card.age}</Text>
+                <Text className="text-2xl  font-bold">{card.age}</Text>
               </View>
             </View>
           )}
@@ -114,7 +136,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     position: "absolute",
     bottom: 0,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFF",
     width: "100%",
     height: 70,
     flexDirection: "row",

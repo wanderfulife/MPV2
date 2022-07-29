@@ -1,8 +1,13 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from "react";
 import { auth } from "../../firebase";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut
 } from "@firebase/auth";
@@ -45,16 +50,16 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  const signInWithEmail = (email, password) => {
-    signInWithEmailAndPassword(auth, email, password).catch((error) =>
-      setError(error)
-    );
-  };
+  // const signInWithEmail = (email, password) => {
+  //   signInWithEmailAndPassword(auth, email, password).catch((error) =>
+  //     setError(error)
+  //   );
+  // };
 
   const memoedValue = useMemo(
     () => ({
       user,
-      signInWithEmail,
+     
       signUpWithEmail,
       logout
     }),
@@ -62,11 +67,7 @@ export const AuthProvider = ({ children }) => {
   );
 
   return (
-    <AuthContext.Provider
-      value={memoedValue}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>
   );
 };
 

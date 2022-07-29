@@ -5,15 +5,48 @@ import {
   TouchableOpacity,
   SafeAreaView
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import useAuth from "../../Hooks/UseAuth";
+import { auth } from "../../../firebase";
+import { signInWithEmailAndPassword } from "@firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const { signInWithEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const signInWithEmail = (email, password) => {
+    signInWithEmailAndPassword(auth, email, password).catch((error) =>
+      alert(error)
+    );
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const onSubmit = async () => {
+    try {
+      await AsyncStorage.setItem("email", email);
+      await AsyncStorage.setItem("pwd", password);
+      signInWithEmail(email, password);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const mail = await AsyncStorage.getItem("email");
+      const pwd = await AsyncStorage.getItem("pwd");
+      if (mail !== null && pwd !== null) {
+        signInWithEmail(mail, pwd);
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <SafeAreaView className={safeArea}>
@@ -35,12 +68,7 @@ const LoginScreen = () => {
           secureTextEntry
         />
 
-        <TouchableOpacity
-          className={loginButton}
-          onPress={() => {
-            signInWithEmail(email, password);
-          }}
-        >
+        <TouchableOpacity className={loginButton} onPress={() => onSubmit()}>
           <Text className={topTextInput}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>

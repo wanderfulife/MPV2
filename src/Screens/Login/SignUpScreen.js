@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   SafeAreaView
 } from "react-native";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import useAuth from "../../Hooks/UseAuth";
 
@@ -14,6 +14,13 @@ const LoginScreen = () => {
   const { signUpWithEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+   useLayoutEffect(() => {
+     navigation.setOptions({
+       headerShown: false
+     });
+   }, []);
+
 
   return (
     <SafeAreaView className={safeArea}>

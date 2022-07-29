@@ -12,10 +12,13 @@ const Stack = createNativeStackNavigator();
 export default function AppNavigator() {
   const { user } = useAuth();
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false
+      }}
+    >
       {user ? (
         <>
-          {/* /*options={{headerShown: false}}*/}
           <Stack.Screen name="Home" component={HomeScreen}></Stack.Screen>
           <Stack.Screen name="Chat" component={ChatScreen}></Stack.Screen>
         </>

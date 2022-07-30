@@ -33,9 +33,7 @@ const InformationScreen = () => {
   const [occupation, setOccupation] = useState(null);
   const [choice, setChoice] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [staffChoice, setStaffChoice] = useState(false);
-  const [jobChoice, setJobChoice] = useState(false);
-
+  const [buttonChoice, setButtonChoice] = useState(false);
 
   const incompleteForm = !name || !city || !occupation;
 
@@ -102,22 +100,20 @@ const InformationScreen = () => {
 
         <View className="flex-row justify-around mt-4">
           <TouchableOpacity
-            disabled={staffChoice}
             onPress={() => {
               setChoice("employee");
-              setJobChoice(true);
+              setButtonChoice((prev) => !prev);
             }}
-            className={staffChoice ? choiceButtonDisabled : jobButton}
+            className={!buttonChoice ? choiceButtonDisabled : jobButton}
           >
             <Text className={textJobButton}>Job</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            disabled={jobChoice}
             onPress={() => {
               setChoice("employer");
-              setStaffChoice(true);
+              setButtonChoice((prev) => !prev);
             }}
-            className={jobChoice ? choiceButtonDisabled : staffButton}
+            className={buttonChoice ? choiceButtonDisabled : staffButton}
           >
             <Text className={textJobButton}>Staff</Text>
           </TouchableOpacity>

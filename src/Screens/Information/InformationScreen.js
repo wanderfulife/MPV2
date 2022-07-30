@@ -9,6 +9,13 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import {
+  AntDesign,
+  Entypo,
+  Ionicons,
+  MaterialCommunityIcons,
+  SimpleLineIcons
+} from "@expo/vector-icons";
+import {
   db,
   storage,
   ref,
@@ -19,7 +26,19 @@ import * as ImagePicker from "expo-image-picker";
 import useAuth from "../../Hooks/UseAuth";
 
 const InformationScreen = () => {
-  const [imageUrl, setImageUrl] = useState();
+  const [imageUrl, setImageUrl] = useState(null);
+  const [name, setName] = useState(null);
+  const [age, setAge] = useState(null);
+  const [city, setCity] = useState(null);
+  const [occupation, setOccupation] = useState(null);
+  const [choice, setChoice] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [staffChoice, setStaffChoice] = useState(false);
+  const [jobChoice, setJobChoice] = useState(false);
+
+
+  const incompleteForm = !name || !city || !occupation;
+
   const { user } = useAuth();
 
   const pickImage = async () => {
@@ -31,51 +50,80 @@ const InformationScreen = () => {
       quality: 1
     });
 
+    setLoading(true);
     if (!result.cancelled) {
-      reference = ref(storage, user.uid);
+      const reference = ref(storage, user.uid);
       const img = await fetch(result.uri);
       const bytes = await img.blob();
       await uploadBytes(reference, bytes);
       await getDownloadURL(reference)
         .then((x) => {
           setImageUrl(x);
-          console.log(x);
+          setLoading(false);
         })
         .finally(() => {
-          console.log("firebased pictured");
+          console.log("firebased");
         });
     }
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="items-center">
       <View className="flex-1 p-4">
         <View className="items-center pb-10">
           <Text className={logo}>MORE PAY</Text>
         </View>
 
         <TextInput
-          className="text-xl "
+          className="text-xl"
+          value={name}
+          onChangeText={(text) => setName(text)}
           placeholder="Name"
         ></TextInput>
-        <TextInput className="text-xl mt-8" placeholder="Age"></TextInput>
-        <TextInput className="text-xl mt-8" placeholder="City"></TextInput>
-
         <TextInput
           className="text-xl mt-8"
+          value={age}
+          onChangeText={(text) => setAge(text)}
+          placeholder="Age"
+        ></TextInput>
+        <TextInput
+          className="text-xl mt-8"
+          value={city}
+          onChangeText={(text) => setCity(text)}
+          placeholder="City"
+        ></TextInput>
+        <TextInput
+          className="text-xl mt-8"
+          value={occupation}
+          onChangeText={(text) => setOccupation(text)}
           placeholder="Occupation"
         ></TextInput>
         <Text className="text-xl mt-8 text-gray-400">Looking for :</Text>
+
         <View className="flex-row justify-around mt-4">
-          <TouchableOpacity className={loginButton}>
-            <Text className={topTextInput}>Job</Text>
+          <TouchableOpacity
+            disabled={staffChoice}
+            onPress={() => {
+              setChoice("employee");
+              setJobChoice(true);
+            }}
+            className={staffChoice ? choiceButtonDisabled : jobButton}
+          >
+            <Text className={textJobButton}>Job</Text>
           </TouchableOpacity>
-          <TouchableOpacity className={staffButton}>
-            <Text className={topTextInput}>Staff</Text>
+          <TouchableOpacity
+            disabled={jobChoice}
+            onPress={() => {
+              setChoice("employer");
+              setStaffChoice(true);
+            }}
+            className={jobChoice ? choiceButtonDisabled : staffButton}
+          >
+            <Text className={textJobButton}>Staff</Text>
           </TouchableOpacity>
         </View>
 
-        <View className="items-center pt-10">
+        <View className="items-center p-4">
           {imageUrl ? (
             <Image
               source={{ uri: imageUrl }}
@@ -83,13 +131,27 @@ const InformationScreen = () => {
             />
           ) : (
             <TouchableOpacity className={imageButton} onPress={pickImage}>
-              <Text className="text-center text-gray-400">
-                Pick an image from camera roll
-              </Text>
+              {!loading ? (
+                <Text className="text-center text-white font-bold">
+                  Pick an image
+                </Text>
+              ) : (
+                <Text className="text-center text-white font-bold">
+                  Image loading...
+                </Text>
+              )}
             </TouchableOpacity>
           )}
         </View>
       </View>
+      <TouchableOpacity
+        disabled={incompleteForm}
+        className={incompleteForm ? updateButtonDisabled : updateButton}
+      >
+        <Text className="text-center text-white font-bold text-xl">
+          Update Profile
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -97,9 +159,11 @@ const InformationScreen = () => {
 export default InformationScreen;
 
 const logo = " text-green-400 font-bold text-2xl pt-1";
-const loginButton = "p-2 rounded-2xl my-2 w-36 bg-green-400";
-const staffButton = "p-2 rounded-2xl my-2 w-36 bg-indigo-500";
-const imageButton = "p-2 rounded-2xl my-2 w-36 border";
+const jobButton = "p-2 rounded-2xl my-2 w-36 mr-1 bg-green-400";
+const staffButton = "p-2 rounded-xl my-2 w-36 ml-1 bg-indigo-500";
+const choiceButtonDisabled = "p-2 rounded-xl my-2 w-36 ml-1 bg-gray-500";
 
-
-const topTextInput = "text-center text-white font-bold m-2";
+const imageButton = "p-2 rounded-xl bg-gray-300 mt-1 w-36 ";
+const textJobButton = "text-center text-xl text-white p-2 font-bold";
+const updateButtonDisabled = " bg-gray-300 w-64 rounded-xl p-3 items-center";
+const updateButton = " bg-red-400 w-64 rounded-xl p-3 items-center";

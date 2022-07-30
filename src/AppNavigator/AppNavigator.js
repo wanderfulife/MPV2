@@ -4,6 +4,7 @@ import HomeScreen from "../Screens/Home/HomeScreen";
 import ChatScreen from "../Screens/Chat/ChatScreen";
 import LoginScreen from "../Screens/Login/LoginScreen";
 import SignUpScreen from "../Screens/Login/SignUpScreen";
+import InformationScreen from "../Screens/Information/InformationScreen";
 
 import useAuth from "../Hooks/UseAuth";
 
@@ -19,13 +20,20 @@ export default function AppNavigator() {
     >
       {user ? (
         <>
-          <Stack.Screen name="Home" component={HomeScreen}></Stack.Screen>
-          <Stack.Screen name="Chat" component={ChatScreen}></Stack.Screen>
+          <Stack.Group>
+            <Stack.Screen name="Home" component={HomeScreen}></Stack.Screen>
+            <Stack.Screen name="Chat" component={ChatScreen}></Stack.Screen>
+          </Stack.Group>
+          <Stack.Group screenOptions={{ presentation: "fullScreenModal"}}>
+            <Stack.Screen name="Information" component={InformationScreen}></Stack.Screen>
+          </Stack.Group>
         </>
       ) : (
         <>
-          <Stack.Screen name="Login" component={LoginScreen}></Stack.Screen>
-          <Stack.Screen name="SignUp" component={SignUpScreen}></Stack.Screen>
+          <Stack.Group>
+            <Stack.Screen name="Login" component={LoginScreen}></Stack.Screen>
+            <Stack.Screen name="SignUp" component={SignUpScreen}></Stack.Screen>
+          </Stack.Group>
         </>
       )}
     </Stack.Navigator>

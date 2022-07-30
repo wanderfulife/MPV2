@@ -62,7 +62,7 @@ const HomeScreen = () => {
         <TouchableOpacity onPress={logout}>
           <Ionicons name="ios-settings-outline" size={30} color="#4ade80" />
         </TouchableOpacity>
-        <TouchableOpacity className="">
+        <TouchableOpacity onPress={() => navigation.navigate("Information")}>
           <Text className={logo}>MORE PAY</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Chat")}>

@@ -86,6 +86,6 @@ const bottomTextInput = "text-center text-white font-bold pt-6";
 const container = "flex-1 justify-center items-center";
 const input = "text-center bg-white p-4 m-1 rounded-2xl w-52 font-semibold";
 const loginButton = "p-2 rounded-2xl my-2 w-36 bg-green-400";
-const logo = "text-center text-green-400 font-bold text-4xl pt-10";
 const topTextInput = "text-center text-white font-bold m-2";
+const logo = "text-center text-green-400 font-bold text-4xl pt-10";
 const safeArea = "flex-1 bg-indigo-600";

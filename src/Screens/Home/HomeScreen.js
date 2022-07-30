@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import {
   Image,
   SafeAreaView,
@@ -13,6 +13,7 @@ import {
   AntDesign,
   Entypo,
   Ionicons,
+  MaterialCommunityIcons,
   SimpleLineIcons
 } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
@@ -50,7 +51,9 @@ const DUMMY_DATA = [
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+  const swipeRef = useRef();
+
 
   return (
     <SafeAreaView className={safeArea}>
@@ -70,6 +73,7 @@ const HomeScreen = () => {
       {/* SWIPER */}
       <View className="flex-1 -mt-6">
         <Swiper
+          ref={swipeRef}
           containerStyle={{ backgroundColor: "transparent" }}
           cards={DUMMY_DATA}
           stackSize={5}
@@ -114,6 +118,21 @@ const HomeScreen = () => {
           )}
         />
       </View>
+
+      <View className="flex flex-row justify-evenly">
+        <TouchableOpacity
+          onPress={() => swipeRef.current.swipeLeft()}
+          className="absolute bottom-4 left-20 items-center justify-center rounded-full w-16 h-16 bg-red-200"
+        >
+          <Entypo name="cross" color="red" size={26} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => swipeRef.current.swipeRight()}
+          className="absolute bottom-4 right-20 items-center justify-center rounded-full w-16 h-16 bg-green-200"
+        >
+          <MaterialCommunityIcons name="cash-fast" size={26} color="#4ade80" />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -122,7 +141,7 @@ export default HomeScreen;
 
 const header = "p-4 items-center justify-around flex-row";
 const logo = "text-green-400 font-bold text-2xl";
-const safeArea = "flex-1 bg-indigo-600";
+const safeArea = "flex-1";
 
 const styles = StyleSheet.create({
   cardShadow: {

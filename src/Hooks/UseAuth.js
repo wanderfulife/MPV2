@@ -11,6 +11,8 @@ import {
   onAuthStateChanged,
   signOut
 } from "@firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const AuthContext = createContext({});
 
@@ -23,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           // Logged in..
-          setUser(user);
+          console.log(user)
         } else {
           // Not logged in..
           setUser(null);
@@ -41,6 +43,7 @@ export const AuthProvider = ({ children }) => {
   }, [error]);
 
   const logout = () => {
+    AsyncStorage.clear();
     signOut(auth).catch((error) => setError(error));
   };
 

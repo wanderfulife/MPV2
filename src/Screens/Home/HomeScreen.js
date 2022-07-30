@@ -68,7 +68,7 @@ const HomeScreen = () => {
       </View>
 
       {/* SWIPER */}
-      <View className="flex-1 -mt-10">
+      <View className="flex-1 -mt-6">
         <Swiper
           containerStyle={{ backgroundColor: "transparent" }}
           cards={DUMMY_DATA}

@@ -39,6 +39,7 @@ const InformationScreen = () => {
       await getDownloadURL(reference)
         .then((x) => {
           setImageUrl(x);
+          console.log(x);
         })
         .finally(() => {
           console.log("firebased pictured");
@@ -48,13 +49,13 @@ const InformationScreen = () => {
 
   return (
     <SafeAreaView>
-      <View className="flex-1 p-4 border">
-        <View className="items-center">
+      <View className="flex-1 p-4">
+        <View className="items-center pb-10">
           <Text className={logo}>MORE PAY</Text>
         </View>
 
         <TextInput
-          className="text-xl text-gray-400"
+          className="text-xl "
           placeholder="Name"
         ></TextInput>
         <TextInput className="text-xl mt-8" placeholder="Age"></TextInput>
@@ -74,11 +75,11 @@ const InformationScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <View className="items-center p-8">
+        <View className="items-center pt-10">
           {imageUrl ? (
             <Image
               source={{ uri: imageUrl }}
-              className="rounded-full w-20 h-20"
+              className="rounded-full w-20 h-20 "
             />
           ) : (
             <TouchableOpacity className={imageButton} onPress={pickImage}>

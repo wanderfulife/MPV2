@@ -7,14 +7,7 @@ import {
   TouchableOpacity,
   Image
 } from "react-native";
-import React, { useState } from "react";
-import {
-  AntDesign,
-  Entypo,
-  Ionicons,
-  MaterialCommunityIcons,
-  SimpleLineIcons
-} from "@expo/vector-icons";
+import React, { useLayoutEffect, useState } from "react";
 import {
   db,
   storage,
@@ -24,6 +17,8 @@ import {
 } from "../../../firebase";
 import * as ImagePicker from "expo-image-picker";
 import useAuth from "../../Hooks/UseAuth";
+import { useNavigation } from "@react-navigation/native";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 const InformationScreen = () => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -34,10 +29,26 @@ const InformationScreen = () => {
   const [choice, setChoice] = useState(null);
   const [loading, setLoading] = useState(false);
   const [buttonChoice, setButtonChoice] = useState(false);
+  const navigation = useNavigation();
+  const {user} = useAuth()
 
-  const incompleteForm = !name || !city || !occupation;
+  const incompleteForm = !name || !city || !occupation || !age || !imageUrl || !choice;
+  
 
-  const { user } = useAuth();
+  const updateUserProfile = () => {
+    setDoc(doc(db, 'users', user.uid), {
+      id: user.uid,
+      displayName: name,
+      age: age,
+      city: city,
+      job: occupation,
+      research: choice,
+      photoURL: imageUrl,
+      timestamp: serverTimestamp()
+    }).then(() => {
+      navigation.goBack()
+    }).catch(error => alert(error.message))
+  }
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -75,25 +86,25 @@ const InformationScreen = () => {
         <TextInput
           className="text-xl"
           value={name}
-          onChangeText={(text) => setName(text)}
+          onChangeText={setName}
           placeholder="Name"
         ></TextInput>
         <TextInput
           className="text-xl mt-8"
           value={age}
-          onChangeText={(text) => setAge(text)}
+          onChangeText={setAge}
           placeholder="Age"
         ></TextInput>
         <TextInput
           className="text-xl mt-8"
           value={city}
-          onChangeText={(text) => setCity(text)}
+          onChangeText={setCity}
           placeholder="City"
         ></TextInput>
         <TextInput
           className="text-xl mt-8"
           value={occupation}
-          onChangeText={(text) => setOccupation(text)}
+          onChangeText={setOccupation}
           placeholder="Occupation"
         ></TextInput>
         <Text className="text-xl mt-8 text-gray-400">Looking for :</Text>
@@ -101,7 +112,7 @@ const InformationScreen = () => {
         <View className="flex-row justify-around mt-4">
           <TouchableOpacity
             onPress={() => {
-              setChoice("employee");
+              setChoice("employer");
               setButtonChoice((prev) => !prev);
             }}
             className={!buttonChoice ? choiceButtonDisabled : jobButton}
@@ -110,7 +121,7 @@ const InformationScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              setChoice("employer");
+              setChoice("employee");
               setButtonChoice((prev) => !prev);
             }}
             className={buttonChoice ? choiceButtonDisabled : staffButton}
@@ -143,6 +154,7 @@ const InformationScreen = () => {
       <TouchableOpacity
         disabled={incompleteForm}
         className={incompleteForm ? updateButtonDisabled : updateButton}
+        onPress={updateUserProfile}
       >
         <Text className="text-center text-white font-bold text-xl">
           Update Profile

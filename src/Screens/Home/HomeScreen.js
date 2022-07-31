@@ -202,7 +202,9 @@ const HomeScreen = () => {
             }
           }}
           renderCard={(card) =>
+            
             card ? (
+              
               <View key={card.id} className="relative h-3/4 rounded-xl">
                 <Image
                   className="absolute top-0 h-full w-full rounded-xl"

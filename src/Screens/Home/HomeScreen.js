@@ -11,7 +11,15 @@ import {
 import useAuth from "../../Hooks/UseAuth";
 import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Swiper from "react-native-deck-swiper";
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  setDoc,
+  where
+} from "firebase/firestore";
 import { db } from "../../../firebase";
 
 const HomeScreen = () => {
@@ -19,7 +27,7 @@ const HomeScreen = () => {
   const { user, logout } = useAuth();
   const swipeRef = useRef();
   const [profiles, setProfiles] = useState([]);
-  const [search, setSearch] = useState()
+  const [search, setSearch] = useState();
 
   useLayoutEffect(
     () =>
@@ -31,36 +39,73 @@ const HomeScreen = () => {
     []
   );
 
-  useEffect(() => {
-   onSnapshot(doc(db, "users", user.uid), (snapshot) => {
-     if (snapshot.exists()) {
-       setSearch(snapshot.data().research);
-       console.log(search)
-     }
-   });
- }, [])
-
+  useEffect(
+    () =>
+      onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+        if (snapshot.exists()) {
+          setSearch(snapshot.data().research);
+        }
+      }),
+    []
+  );
 
   useEffect(() => {
     let unsub;
 
     const fetchCards = async () => {
-      unsub =  onSnapshot(collection(db, "users"), (snapshot) => {
-        setProfiles(
-          snapshot.docs.filter(doc => doc.data().research !== search && doc.id !== user.uid ).map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-          }))
-        );
-      });
+
+      const passes = await getDocs(
+        collection(db, "users", user.uid, "passes")
+      ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
+
+      const swipes = await getDocs(
+        collection(db, "users", user.uid, "swipes")
+      ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
+
+      const passedUserIds = passes.length > 0 ? passes : ["test"];
+      const swipedUserIds = swipes.length > 0 ? passes : ["test"];
+
+      unsub = onSnapshot(
+        query(
+          collection(db, "users"),
+          where("id", "not-in", [...passedUserIds, ...swipedUserIds])
+        ),
+        (snapshot) => {
+          setProfiles(
+            snapshot.docs
+              .filter(
+                (doc) => doc.data().research !== search && doc.id !== user.uid
+              )
+              .map((doc) => ({
+                id: doc.id,
+                ...doc.data()
+              }))
+          );
+        }
+      );
     };
-    
+
     fetchCards();
     return unsub;
   }, [search]);
 
-  console.log(profiles)
+  const swipeLeft = (cardIndex) => {
+    if (!profiles[cardIndex]) return;
+    const userSwiped = profiles[cardIndex];
+    console.log(`You swiped Pass on ${userSwiped.displayName}`);
 
+    setDoc(doc(db, "users", user.uid, "passes", userSwiped.id), userSwiped);
+  };
+
+  const swipeRight = (cardIndex) => {
+    if (!profiles[cardIndex]) return;
+    const userSwiped = profiles[cardIndex];
+    console.log(
+      `You swiped Hire on ${userSwiped.displayName} (${userSwiped.job})`
+    );
+
+    setDoc(doc(db, "users", user.uid, "swipes", userSwiped.id), userSwiped);
+  };
   return (
     <SafeAreaView className={safeArea}>
       {/* HEADER */}
@@ -86,8 +131,14 @@ const HomeScreen = () => {
           cardIndex={0}
           animateCardOpacity
           verticalSwipe={false}
-          onSwipedLeft={() => console.log("swipe next")}
-          onSwipedRight={() => console.log("swipe hire")}
+          onSwipedLeft={(cardIndex) => {
+            console.log("swipe next");
+            swipeLeft(cardIndex);
+          }}
+          onSwipedRight={(cardIndex) => {
+            console.log("swipe hire");
+            swipeRight(cardIndex);
+          }}
           overlayLabels={{
             left: {
               title: "NOPE",
@@ -114,10 +165,7 @@ const HomeScreen = () => {
                   className="absolute top-0 h-full w-full rounded-xl"
                   source={{ uri: card.photoURL }}
                 />
-                <View
-                  style={styles.cardShadow}
-                  className="absolute bottom-0 bg-white w-full flex-row justify-between items-center h-20 px-6 py-2 rounded-b-xl"
-                >
+                <View style={styles.cardShadow}>
                   <View>
                     <Text className="text-xl  font-bold">
                       {card.displayName}
@@ -128,10 +176,7 @@ const HomeScreen = () => {
                 </View>
               </View>
             ) : (
-              <View
-                className="relative bg-white h-3/4 rounded-xl justify-center items-center"
-                style={styles.cardShadow}
-              >
+              <View style={styles.nocardShadow}>
                 <Text className="font-bold pb-5">No more profiles</Text>
                 <Image
                   className="h-20 w-full"
@@ -178,6 +223,38 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
-    elevation: 2
+    elevation: 2,
+    position: "absolute",
+    bottom: 0,
+    backgroundColor: "#FFF",
+    width: "100%",
+    height: 70,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10
+  },
+  nocardShadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+    position: "relative",
+    bottom: 0,
+    backgroundColor: "#FFF",
+    width: "100%",
+    height: 500,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 10
   }
 });

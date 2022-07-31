@@ -14,6 +14,7 @@ import Swiper from "react-native-deck-swiper";
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
@@ -50,10 +51,9 @@ const HomeScreen = () => {
   );
 
   useEffect(() => {
-    let unsub;
+    let cancel = false;
 
     const fetchCards = async () => {
-
       const passes = await getDocs(
         collection(db, "users", user.uid, "passes")
       ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
@@ -62,10 +62,10 @@ const HomeScreen = () => {
         collection(db, "users", user.uid, "swipes")
       ).then((snapshot) => snapshot.docs.map((doc) => doc.id));
 
-      const passedUserIds = passes.length > 0 ? passes : ["test"];
-      const swipedUserIds = swipes.length > 0 ? passes : ["test"];
+      const passedUserIds = passes.length > 0 ? passes : ["NotEmpty"];
+      const swipedUserIds = swipes.length > 0 ? passes : ["NotEmpty"];
 
-      unsub = onSnapshot(
+      onSnapshot(
         query(
           collection(db, "users"),
           where("id", "not-in", [...passedUserIds, ...swipedUserIds])
@@ -86,7 +86,9 @@ const HomeScreen = () => {
     };
 
     fetchCards();
-    return unsub;
+    return () => {
+      cancel = true;
+    };
   }, [search]);
 
   const swipeLeft = (cardIndex) => {
@@ -97,11 +99,31 @@ const HomeScreen = () => {
     setDoc(doc(db, "users", user.uid, "passes", userSwiped.id), userSwiped);
   };
 
-  const swipeRight = (cardIndex) => {
+  const swipeRight = async (cardIndex) => {
     if (!profiles[cardIndex]) return;
     const userSwiped = profiles[cardIndex];
-    console.log(
-      `You swiped Hire on ${userSwiped.displayName} (${userSwiped.job})`
+    const loggedInProfile = await (await getDoc(db, "users", user.uid)).data();
+
+    //Check if the user swiped on you...
+    getDoc(doc(db, "users", userSwiped.id, "swipes", user.uid)).then(
+      (documentSnapshot) => {
+        if (documentSnapshot.exists()) {
+          //User has matched with you before you matched with them...
+          //Create a Match
+          console.log(`you have matched with ${userSwiped.displayName}`);
+          setDoc(
+            doc(db, "users", user.uid, "swipes", userSwiped.id),
+            userSwiped
+          );
+
+          //Create a Match
+        } else {
+          // User has swiped as first interactio between the two or didn't get swiped on ...
+          console.log(
+            `You swiped Hire on ${userSwiped.displayName} (${userSwiped.job})`
+          );
+        }
+      }
     );
 
     setDoc(doc(db, "users", user.uid, "swipes", userSwiped.id), userSwiped);

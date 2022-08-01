@@ -76,8 +76,8 @@ const MessageScreen = () => {
         keyboardVerticalOffset={10}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-				  <FlatList
-					  inverted={-1}
+          <FlatList
+            inverted={-1}
             data={messages}
             keyExtractor={(item) => item.id}
             renderItem={({ item: message }) =>

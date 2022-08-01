@@ -35,8 +35,8 @@ const ChatList = () => {
       renderItem={({ item }) => <ChatRow matchDetails={item} />}
     />
   ) : (
-    <View className="p-5">
-      <Text className="text-center text-lg">No matches at the moment 😢</Text>
+    <View className="">
+      <Text className="text-center p-5 text-lg">No matches at the moment 😢</Text>
     </View>
   );
 };

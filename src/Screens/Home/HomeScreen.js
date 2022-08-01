@@ -304,3 +304,5 @@ const styles = StyleSheet.create({
     borderRadius: 10
   }
 });
+
+// green #4ade80 // purple #4f46e5

@@ -7,6 +7,7 @@ import SignUpScreen from "../Screens/Login/SignUpScreen";
 import InformationScreen from "../Screens/Information/InformationScreen";
 import useAuth from "../Hooks/UseAuth";
 import MatchedScreen from "../Screens/Match/MatchedScreen";
+import MessageScreen from "../Screens/Message/MessageScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ export default function AppNavigator() {
           <Stack.Group>
             <Stack.Screen name="Home" component={HomeScreen}></Stack.Screen>
             <Stack.Screen name="Chat" component={ChatScreen}></Stack.Screen>
+            <Stack.Screen name="Message" component={MessageScreen}></Stack.Screen>
           </Stack.Group>
           <Stack.Group screenOptions={{ presentation: "fullScreenModal" }}>
             <Stack.Screen

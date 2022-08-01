@@ -53,7 +53,7 @@ const HomeScreen = () => {
   );
 
   useEffect(() => {
-    let cancel = false;
+    let cancel = true;
 
     const fetchCards = async () => {
       const passes = await getDocs(
@@ -77,24 +77,25 @@ const HomeScreen = () => {
           )
         ),
         (snapshot) => {
-          setProfiles(
-            snapshot.docs
-              .filter(
-                (doc) => doc.data().research !== search && doc.id !== user.uid
-              )
-              .map((doc) => ({
-                id: doc.id,
-                ...doc.data()
-              }))
-          );
+          if (cancel) {
+            setProfiles(
+              snapshot.docs
+                .filter(
+                  (doc) => doc.data().research !== search && doc.id !== user.uid
+                )
+                .map((doc) => ({
+                  id: doc.id,
+                  ...doc.data()
+                }))
+            );
+          }
         }
       );
     };
 
     fetchCards();
-    return () => {
-      cancel = true;
-    };
+    return () => cancel = false;
+  
   }, [search]);
 
   const swipeLeft = (cardIndex) => {

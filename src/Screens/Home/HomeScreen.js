@@ -46,7 +46,7 @@ const HomeScreen = () => {
     () =>
       onSnapshot(doc(db, "users", user.uid), (snapshot) => {
         if (snapshot.exists()) {
-          setSearch(snapshot.data().research);
+          setSearch(snapshot.data().lookingForJob);
         }
       }),
     []
@@ -81,7 +81,8 @@ const HomeScreen = () => {
             setProfiles(
               snapshot.docs
                 .filter(
-                  (doc) => doc.data().research !== search && doc.id !== user.uid
+                  (doc) =>
+                    doc.data().lookingForJob !== search && doc.id !== user.uid
                 )
                 .map((doc) => ({
                   id: doc.id,

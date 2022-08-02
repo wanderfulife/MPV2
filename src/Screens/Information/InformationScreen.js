@@ -3,9 +3,10 @@ import {
   Text,
   SafeAreaView,
   TextInput,
-  Button,
   TouchableOpacity,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useLayoutEffect, useState } from "react";
 import {
@@ -19,6 +20,8 @@ import * as ImagePicker from "expo-image-picker";
 import useAuth from "../../Hooks/UseAuth";
 import { useNavigation } from "@react-navigation/native";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { MaterialCommunityIcons } from "@expo/vector-icons"; 
+import { Feather } from "@expo/vector-icons";
 
 const InformationScreen = () => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -26,28 +29,32 @@ const InformationScreen = () => {
   const [age, setAge] = useState(null);
   const [city, setCity] = useState(null);
   const [occupation, setOccupation] = useState(null);
-  const [choice, setChoice] = useState(null);
+  const [lookingForJob, setLookingForJob] = useState(true)
   const [loading, setLoading] = useState(false);
-  const [buttonChoice, setButtonChoice] = useState(false);
   const navigation = useNavigation();
   const {user} = useAuth()
 
-  const incompleteForm = !name || !city || !occupation || !age || !imageUrl || !choice;
+  const incompleteForm =
+    !name || !city || !occupation || !age || !imageUrl ;
   
 
   const updateUserProfile = () => {
-    setDoc(doc(db, 'users', user.uid), {
+    setDoc(doc(db, "users", user.uid), {
       id: user.uid,
       displayName: name,
       age: age,
       city: city,
       job: occupation,
-      research: choice,
+      lookingForJob: lookingForJob,
       photoURL: imageUrl,
       timestamp: serverTimestamp()
-    }).then(() => {
-      navigation.goBack()
-    }).catch(error => alert(error.message))
+    })
+      .then(() => {
+          console.log("User created in Firestore Database");
+
+        navigation.goBack();
+      })
+      .catch((error) => alert(error.message));
   }
 
   const pickImage = async () => {
@@ -71,95 +78,104 @@ const InformationScreen = () => {
           setLoading(false);
         })
         .finally(() => {
-          console.log("firebased");
+          console.log("Picture uploaded in Firebase storage");
         });
     }
   };
 
   return (
     <SafeAreaView className="items-center">
-      <View className="flex-1 p-4">
-        <View className="items-center pb-10">
+      <View className="flex-1 p-4 ">
+        <View className="items-center pb-6">
           <Text className={logo}>MORE PAY</Text>
         </View>
-
-        <TextInput
-          className="text-xl"
-          value={name}
-          onChangeText={setName}
-          placeholder="Name"
-        ></TextInput>
-        <TextInput
-          className="text-xl mt-8"
-          value={age}
-          onChangeText={setAge}
-          placeholder="Age"
-        ></TextInput>
-        <TextInput
-          className="text-xl mt-8"
-          value={city}
-          onChangeText={setCity}
-          placeholder="City"
-        ></TextInput>
-        <TextInput
-          className="text-xl mt-8"
-          value={occupation}
-          onChangeText={setOccupation}
-          placeholder="Occupation"
-        ></TextInput>
-        <Text className="text-xl mt-8 text-gray-400">Looking for :</Text>
-
-        <View className="flex-row justify-around mt-4">
-          <TouchableOpacity
-            onPress={() => {
-              setChoice("employer");
-              setButtonChoice((prev) => !prev);
-            }}
-            className={!buttonChoice ? choiceButtonDisabled : jobButton}
-          >
-            <Text className={textJobButton}>Job</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setChoice("employee");
-              setButtonChoice((prev) => !prev);
-            }}
-            className={buttonChoice ? choiceButtonDisabled : staffButton}
-          >
-            <Text className={textJobButton}>Staff</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View className="items-center p-4">
-          {imageUrl ? (
-            <Image
-              source={{ uri: imageUrl }}
-              className="rounded-full w-20 h-20 "
-            />
-          ) : (
-            <TouchableOpacity className={imageButton} onPress={pickImage}>
-              {!loading ? (
-                <Text className="text-center text-white font-bold">
-                  Pick an image
-                </Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View>
+            <View className="items-center pb-6">
+              {imageUrl ? (
+                <Image
+                  source={{ uri: imageUrl }}
+                  className="rounded-full w-20 h-20 "
+                />
               ) : (
-                <Text className="text-center text-white font-bold">
-                  Image loading...
-                </Text>
+                <TouchableOpacity
+                  className="rounded-full bg-gray-300 p-3"
+                  onPress={pickImage}
+                >
+                  {!loading ? (
+                    <MaterialCommunityIcons
+                      name="camera-plus-outline"
+                      size={24}
+                      color="#9CA3AF"
+                    />
+                  ) : (
+                    <Feather name="loader" size={24} color="#9CA3AF" />
+                  )}
+                </TouchableOpacity>
               )}
-            </TouchableOpacity>
-          )}
+            </View>
+            <TextInput
+              className="text-xl text-green-400 pb-6 font-bold"
+              value={name}
+              onChangeText={setName}
+              placeholder="Name"
+            ></TextInput>
+            <TextInput
+              className="text-xl text-green-400 pb-6 font-bold"
+              value={age}
+              onChangeText={setAge}
+              placeholder="Age"
+            ></TextInput>
+            <TextInput
+              className="text-xl text-green-400 pb-6 font-bold"
+              value={city}
+              onChangeText={setCity}
+              placeholder="City"
+            ></TextInput>
+            <TextInput
+              className="text-xl text-green-400 pb-6 font-bold"
+              value={occupation}
+              onChangeText={setOccupation}
+              placeholder="Occupation"
+            ></TextInput>
+            <View className="items-center">
+              <Text className="text-xl mt-6 text-green-400 font-bold">
+                Looking for :
+              </Text>
+            </View>
+
+            <View className="flex-row justify-around mt-4">
+              <TouchableOpacity
+                onPress={() => {
+                  setLookingForJob(true);
+                }}
+                className={lookingForJob ? jobButton : choiceButtonDisabled}
+              >
+                <Text className={textJobButton}>Job</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setLookingForJob(false);
+                }}
+                className={lookingForJob ? choiceButtonDisabled : staffButton}
+              >
+                <Text className={textJobButton}>Staff</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+        <View className="items-center pt-6">
+          <TouchableOpacity
+            disabled={incompleteForm}
+            className={incompleteForm ? updateButtonDisabled : updateButton}
+            onPress={updateUserProfile}
+          >
+            <Text className="text-center text-white font-bold text-xl">
+              Update Profile
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity
-        disabled={incompleteForm}
-        className={incompleteForm ? updateButtonDisabled : updateButton}
-        onPress={updateUserProfile}
-      >
-        <Text className="text-center text-white font-bold text-xl">
-          Update Profile
-        </Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -167,11 +183,11 @@ const InformationScreen = () => {
 export default InformationScreen;
 
 const logo = " text-green-400 font-bold text-2xl pt-1";
-const jobButton = "p-2 rounded-2xl my-2 w-36 mr-1 bg-green-400";
-const staffButton = "p-2 rounded-xl my-2 w-36 ml-1 bg-indigo-500";
-const choiceButtonDisabled = "p-2 rounded-xl my-2 w-36 ml-1 bg-gray-500";
+const jobButton = "p-2 rounded-xl my-2 w-36 mr-1 bg-green-400";
+const choiceButtonDisabled = "p-2 rounded-xl my-2 w-36 mr-1 bg-gray-500";
+const staffButton = "p-2 rounded-xl my-2 w-36 mr-1 bg-green-400";
 
 const imageButton = "p-2 rounded-xl bg-gray-300 mt-1 w-36 ";
 const textJobButton = "text-center text-xl text-white p-2 font-bold";
-const updateButtonDisabled = " bg-gray-300 w-64 rounded-xl p-3 items-center";
-const updateButton = " bg-red-400 w-64 rounded-xl p-3 items-center";
+const updateButtonDisabled = " bg-gray-300 w-64 rounded-xl p-3  items-center";
+const updateButton = " bg-indigo-600 w-64 rounded-xl p-3  items-center";

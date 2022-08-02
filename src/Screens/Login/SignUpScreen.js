@@ -21,6 +21,9 @@ const LoginScreen = () => {
         className={container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+        <Text className="text-center text-white font-bold text-2xl pb-10">
+          Sign Up
+        </Text>
         <TextInput
           className={input}
           placeholder="Email"

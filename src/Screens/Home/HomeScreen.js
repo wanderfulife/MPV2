@@ -27,7 +27,7 @@ import generateId from "../../Lib/generateId";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { user, logout } = useAuth();
+  const { user, logout, newMessage } = useAuth();
   const swipeRef = useRef();
   const [profiles, setProfiles] = useState([]);
   const [search, setSearch] = useState();
@@ -41,6 +41,7 @@ const HomeScreen = () => {
       }),
     []
   );
+
 
   useEffect(
     () =>
@@ -158,12 +159,18 @@ const HomeScreen = () => {
         <TouchableOpacity onPress={logout}>
           <Ionicons name="ios-settings-outline" size={30} color="#4ade80" />
         </TouchableOpacity>
-        <TouchableOpacity >
+        <TouchableOpacity>
           <Text className={logo}>MORE PAY</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
-          <Ionicons name="chatbubbles-sharp" size={30} color="#4ade80" />
-        </TouchableOpacity>
+        {newMessage ? (
+          <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
+            <Ionicons name="chatbubbles-sharp" size={30} color="#4f46e5" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
+            <Ionicons name="chatbubbles-sharp" size={30} color="#4ade80" />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* SWIPER */}
@@ -204,9 +211,7 @@ const HomeScreen = () => {
             }
           }}
           renderCard={(card) =>
-            
             card ? (
-              
               <View key={card.id} className="relative h-3/4 rounded-xl">
                 <Image
                   className="absolute top-0 h-full w-full rounded-xl"

@@ -156,12 +156,12 @@ const HomeScreen = () => {
     <SafeAreaView className={safeArea}>
       {/* HEADER */}
       <View className={header}>
-        <TouchableOpacity onPress={logout}>
+        <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
           <Ionicons name="ios-settings-outline" size={30} color="#4ade80" />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text className={logo}>MORE PAY</Text>
-        </TouchableOpacity>
+
+        <Text className={logo}>MORE PAY</Text>
+
         {newMessage ? (
           <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
             <Ionicons name="chatbubbles-sharp" size={30} color="#4f46e5" />
@@ -245,13 +245,13 @@ const HomeScreen = () => {
       <View className="flex flex-row justify-evenly">
         <TouchableOpacity
           onPress={() => swipeRef.current.swipeLeft()}
-          className="absolute bottom-4 left-20 items-center justify-center rounded-full w-16 h-16 bg-red-200"
+          className="absolute bottom-7 left-20 items-center justify-center rounded-full w-16 h-16 bg-red-200"
         >
           <Entypo name="cross" color="red" size={26} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => swipeRef.current.swipeRight()}
-          className="absolute bottom-4 right-20 items-center justify-center rounded-full w-16 h-16 bg-green-200"
+          className="absolute bottom-7 right-20 items-center justify-center rounded-full w-16 h-16 bg-green-200"
         >
           <MaterialCommunityIcons name="cash-fast" size={26} color="#4ade80" />
         </TouchableOpacity>

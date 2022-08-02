@@ -23,21 +23,25 @@ import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; 
 import { Feather } from "@expo/vector-icons";
 
-const InformationScreen = () => {
+const SettingScreen = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [name, setName] = useState(null);
   const [age, setAge] = useState(null);
   const [city, setCity] = useState(null);
   const [occupation, setOccupation] = useState(null);
-  const [lookingForJob, setLookingForJob] = useState(true)
+  const [lookingForJob, setLookingForJob] = useState(true);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const { user } = useAuth()
-  
+  const { user } = useAuth();
 
-  const incompleteForm =
-    !name || !city || !occupation || !age || !imageUrl ;
-  
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true
+    })
+  })
+
+  const incompleteForm = !name || !city || !occupation || !age || !imageUrl;
 
   const updateUserProfile = () => {
     setDoc(doc(db, "users", user.uid), {
@@ -51,12 +55,12 @@ const InformationScreen = () => {
       timestamp: serverTimestamp()
     })
       .then(() => {
-          console.log("User created in Firestore Database");
+        console.log("User created in Firestore Database");
 
-        navigation.goBack();
+        navigation.navigate("Home");
       })
       .catch((error) => alert(error.message));
-  }
+  };
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -86,7 +90,7 @@ const InformationScreen = () => {
 
   return (
     <SafeAreaView className="items-center">
-      <View className="flex-1 p-4 ">
+      <View className="flex-1 ">
         <View className="items-center pb-6">
           <Text className={logo}>MORE PAY</Text>
         </View>
@@ -181,7 +185,7 @@ const InformationScreen = () => {
   );
 };
 
-export default InformationScreen;
+export default SettingScreen;
 
 const logo = " text-green-400 font-bold text-2xl pt-1";
 const jobButton = "p-2 rounded-xl my-2 w-36 mr-1 bg-green-400";

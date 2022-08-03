@@ -66,7 +66,7 @@ const MessageScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1 pt-4r">
       <Header
         title={getMatchedUserInfo(matchDetails.users, user.uid).displayName}
       />

@@ -157,7 +157,11 @@ const HomeScreen = () => {
       {/* HEADER */}
       <View className={header}>
         <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-          <Ionicons name="ios-settings-outline" size={30} color="#4ade80" />
+          <Ionicons
+            name="ios-settings-outline"
+            size={32}
+            color="#4ade80"
+          />
         </TouchableOpacity>
 
         <Text className={logo}>MORE PAY</Text>
@@ -168,13 +172,18 @@ const HomeScreen = () => {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={() => navigation.navigate("Chat")}>
-            <Ionicons name="chatbubbles-sharp" size={30} color="#4ade80" />
+            <Ionicons
+        
+              name="chatbubbles-sharp"
+              size={32}
+              color="#4ade80"
+            />
           </TouchableOpacity>
         )}
       </View>
 
       {/* SWIPER */}
-      <View className="flex-1 -mt-6">
+      <View className="flex-1 -mt-1 ">
         <Swiper
           ref={swipeRef}
           containerStyle={{ backgroundColor: "transparent" }}
@@ -229,11 +238,11 @@ const HomeScreen = () => {
               </View>
             ) : (
               <View style={styles.nocardShadow}>
-                <Text className="font-bold pb-5">No more profiles</Text>
+                  <Text className="font-bold pb-5">No more profiles</Text>
+                  
                 <Image
-                  className="h-20 w-full"
-                  height={100}
-                  width={100}
+                  className="h-20 w-20"
+                
                   source={require("./../../../assets/emoji.jpg")}
                 />
               </View>
@@ -245,13 +254,13 @@ const HomeScreen = () => {
       <View className="flex flex-row justify-evenly">
         <TouchableOpacity
           onPress={() => swipeRef.current.swipeLeft()}
-          className="absolute bottom-7 left-20 items-center justify-center rounded-full w-16 h-16 bg-red-200"
+          className="absolute bottom-6 left-20 items-center justify-center rounded-full w-16 h-16 bg-red-200"
         >
           <Entypo name="cross" color="red" size={26} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => swipeRef.current.swipeRight()}
-          className="absolute bottom-7 right-20 items-center justify-center rounded-full w-16 h-16 bg-green-200"
+          className="absolute bottom-6 right-20 items-center justify-center rounded-full w-16 h-16 bg-green-200"
         >
           <MaterialCommunityIcons name="cash-fast" size={26} color="#4ade80" />
         </TouchableOpacity>
@@ -262,7 +271,7 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
-const header = "p-4 items-center justify-around flex-row";
+const header = " pt-8 items-center justify-around flex-row";
 const logo = "text-green-400 font-bold text-2xl";
 const safeArea = "flex-1";
 

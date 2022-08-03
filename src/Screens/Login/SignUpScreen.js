@@ -3,7 +3,10 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  View
 } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -21,35 +24,39 @@ const LoginScreen = () => {
         className={container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Text className="text-center text-white font-bold text-2xl pb-10">
-          Sign Up
-        </Text>
-        <TextInput
-          className={input}
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          className={input}
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry
-        />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View className="items-center">
+            <Text className="text-center text-white font-bold text-2xl pb-10">
+              Sign Up
+            </Text>
+            <TextInput
+              className={input}
+              placeholder="Email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+            <TextInput
+              className={input}
+              placeholder="Password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry
+            />
 
-        <TouchableOpacity
-          className={SignUpButton}
-          onPress={() => {
-            signUpWithEmail(email, password);
-          }}
-        >
-          <Text className={textInput}>Sign up</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text className={bottomTextInput}>Login</Text>
-          <Text className={logo}>MORE PAY</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              className={SignUpButton}
+              onPress={() => {
+                signUpWithEmail(email, password);
+              }}
+            >
+              <Text className={textInput}>Sign up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text className={bottomTextInput}>Login</Text>
+            </TouchableOpacity>
+            <Text className={logo}>MORE PAY</Text>
+          </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

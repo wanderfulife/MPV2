@@ -12,7 +12,8 @@ const firebaseConfig = {
   projectId: Constants.manifest?.extra?.firebaseProjectId,
   storageBucket: Constants.manifest?.extra?.firebaseStorageBucket,
   messagingSenderId: Constants.manifest?.extra?.firebaseMessagingSenderId,
-  appId: Constants.manifest?.extra?.firebaseAppId
+  appId: Constants.manifest?.extra?.firebaseAppId,
+  measurementId: Constants.manifest?.extra?.measurementId
 };
 
 let app;
@@ -21,7 +22,6 @@ if (firebase.apps.length === 0) {
 } else {
   app = firebase.app();
 }
-
 
 const auth = firebase.auth();
 const db = getFirestore();

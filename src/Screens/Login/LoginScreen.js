@@ -15,7 +15,7 @@ import useAuth from "../../Hooks/UseAuth";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-   const { onSubmit } = useAuth();
+   const { signInWithEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -47,14 +47,14 @@ const LoginScreen = () => {
 
             <TouchableOpacity
               className={loginButton}
-              onPress={() => onSubmit(email,password)}
+              onPress={() => signInWithEmail(email, password)}
             >
               <Text className={topTextInput}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
               <Text className={bottomTextInput}>Create new account</Text>
             </TouchableOpacity>
-              <Text className={logo}>MORE PAY</Text>
+            <Text className={logo}>MORE PAY</Text>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

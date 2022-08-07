@@ -19,32 +19,6 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-  const [loadingInitial, setLoadingInitial] = useState(true);
-
-  const onSubmit = async (email,password) => {
-    try {
-      await AsyncStorage.setItem("email", email);
-      await AsyncStorage.setItem("pwd", password);
-      signInWithEmail(email, password);
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const mail = await AsyncStorage.getItem("email");
-        const pwd = await AsyncStorage.getItem("pwd");
-        if (mail !== null && pwd !== null) {
-          signInWithEmail(mail, pwd);
-        }
-      } catch (error) {
-        alert(error);
-      }
-    };
-    getData();
-  }, []);
 
   useEffect(
     () =>
@@ -52,14 +26,9 @@ export const AuthProvider = ({ children }) => {
         if (user) {
           // Logged in..
           setUser(user);
-          setLoadingInitial(false);
         } else {
           // Not logged in..
           setUser(null);
-          setTimeout(() => {
-          setLoadingInitial(false);
-            
-          }, 1100);
         }
       }),
     []
@@ -95,16 +64,13 @@ export const AuthProvider = ({ children }) => {
       user,
       signUpWithEmail,
       signInWithEmail,
-      logout,
-      onSubmit
+      logout
     }),
     [user]
   );
 
   return (
-    <AuthContext.Provider value={memoedValue}>
-      {!loadingInitial && children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>
   );
 };
 

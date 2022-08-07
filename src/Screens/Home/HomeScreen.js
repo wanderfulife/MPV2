@@ -74,7 +74,7 @@ const HomeScreen = () => {
           where(
             "id",
             "not-in",
-            [...passedUserIds, ...swipedUserIds].splice(0, 10)
+            [...passedUserIds, ...swipedUserIds]
           )
         ),
         (snapshot) => {
